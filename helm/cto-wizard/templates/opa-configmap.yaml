@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  check_imdsv1.rego: |
+    package ec2
+
+    default match = false
+
+    match {
+        input.MetadataOptions.HttpTokens == "optional"
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: opa-policy

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: opa
+  labels:
+    app: opa
+spec:
+  type: {{ .Values.opa.service.type }}
+  selector:
+    app: opa
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.opa.service.port }}
+      targetPort: {{ .Values.opa.containerPort }}

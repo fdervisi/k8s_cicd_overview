@@ -1,0 +1,156 @@
+## modify IMDSv2
+ec2 = boto3.client('ec2')
+
+instance_id = 'i-1234567898abcdef0'
+
+try:
+    ec2.modify_instance_metadata_options(
+        instance_id=instance_id,
+        http_tokens='optional',
+        http_endpoint='enabled'
+    )
+    print('IMDSv1 disabled and IMDSv2 enabled successfully.')
+except Exception as e:
+    print(e)
+
+
+## get resultes form OPA server
+curl -X POST http://a6d34e98784744256a13cceb1a86fb63-1329631054.eu-south-1.elb.amazonaws.com:8181/v1/data/ec2/match -d @<(echo '{"input":'$(cat instance.json)'}')
+
+## modify instance data
+aws ec2 modify-instance-metadata-options --instance-id i-0ed8f9f28c37943ca --http-endpoint enabled --http-tokens required
+
+# vemv
+ python3 -m venv env
+
+ # docker
+ sudo docker build -t cto-wizard .
+ sudo docker run -p 5000:5000 cto-wizard
+
+# Argo CD
+
+
+# Install Argo CD
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl delete -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+# Install Argo CD without UI
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+kubectl delete -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+
+# Install Argo CD CLI
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
+
+# Expose the API Server
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
+# get intital admin password
+argocd admin initial-password -n argocd
+
+# change it!
+argocd account update-password
+
+#First list all clusters contexts in your current kubeconfig:
+kubectl config get-contexts -o name
+
+# installs a ServiceAccount
+argocd cluster add arn:aws:eks:eu-south-1:899810771815:cluster/eks-cluster
+
+# set the current namespace to argocd
+kubectl config set-context --current --namespace=argocd
+
+
+# Creating Apps Via CLI
+argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace guestbook
+argocd app create cto-wizard --repo https://github.com/fdervisi/k8s_cicd_overview.git --path kubernetes --dest-server https://kubernetes.default.svc --dest-namespace cto-wizard
+
+
+argocd repo add git@github.com:argoproj/argocd-example-apps.git --ssh-private-key-path ~/.ssh/id_rsa
+
+# view status of the App
+argocd app get guestbook
+
+# Syncing via CLI
+argocd app sync guestbook
+
+
+
+# Manifest:
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cto-wizard
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/fdervisi/k8s_cicd_overview.git
+    targetRevision: HEAD
+    path: kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cto-wizard
+  syncPolicy:
+    automated: {}
+
+
+# Commands
+kubectl apply -f argo-cd-manifest.yaml
+argocd app list
+argocd app delete cto-wizard --cascade
+
+
+
+
+
+# install image updater
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
+argocd account update-ssh --ssh-private-key home/ubuntu/.ssh/id_rsa
+
+
+
+kubectl create secret generic ssh-secret --from-file=sshPrivateKey=/home/ubuntu/.ssh/id_rsa --namespace=argocd --dry-run=client -o yaml > argocd-ssh-key.yaml
+
+
+
+# ssh-key
+
+apiVersion: v1
+data:
+  sshPrivateKey: snip
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ssh-secret
+  namespace: argocd
+
+
+than configmap update:
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"argocd-cm","app.kubernetes.io/part-of":"argocd"},"name":"argocd-cm","namespace":"argocd"}}
+  creationTimestamp: "2023-07-28T13:42:37Z"
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-cm
+  namespace: argocd
+  resourceVersion: "1575409"
+  uid: 421bf830-dbca-4108-b559-f4536a32fcf3
+data:
+  repositories: |
+    - url: git@github.com:fdervisi/k8s_cicd_overview.git
+      sshPrivateKeySecret:
+        name: ssh-secret
+        key: sshPrivateKey
+
+

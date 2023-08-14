@@ -1,0 +1,46 @@
+# .gitignore
+
+# Python files
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+
+# Flask files
+instance/*
+
+# Flask-Session files
+flask_session/*
+
+# Environment files
+.env
+.venv
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.lastHash
+*.log
+
+# Docker files
+Dockerfile
+*.dockerignore
+
+# Directory for any IDE or text editor
+.vscode
+.idea
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Python virtual environments
+venv/
+.venv/
+

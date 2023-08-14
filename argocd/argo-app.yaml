@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cto-wizard
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: fdervisi/cto-wizard:*
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/git-branch: main
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:fdervisi/k8s_cicd_overview.git
+    targetRevision: HEAD
+    path: helm/cto-wizard
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cto-wizard
+  syncPolicy:
+    automated: {}
