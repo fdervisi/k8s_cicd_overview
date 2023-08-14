@@ -5,8 +5,7 @@ on:
   push:
     branches: [ master ]
     paths:
-    - 'app.py'
-    - 'templates/**'
+    - 'aws-ec2-instance-checker/**'
 
 jobs:
   build:
@@ -25,7 +24,7 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: .
+        context: aws-ec2-instance-checker
         push: true
         tags: |
           fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
