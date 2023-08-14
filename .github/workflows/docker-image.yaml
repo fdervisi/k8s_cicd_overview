@@ -4,8 +4,8 @@ on:
   push:
     branches: [ main ]
     paths:
-    - 'app.py'
-    - 'templates/**'
+    - 'aws-ec2-instance-checker/app.py'
+    - 'aws-ec2-instance-checker/templates/**'
 
 jobs:
   build:
