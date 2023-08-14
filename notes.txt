@@ -24,8 +24,8 @@ aws ec2 modify-instance-metadata-options --instance-id i-0ed8f9f28c37943ca --htt
  python3 -m venv env
 
  # docker
- sudo docker build -t cto-wizard .
- sudo docker run -p 5000:5000 cto-wizard
+ sudo docker build -t aws-ec2-instance-checker .
+ sudo docker run -p 5000:5000 aws-ec2-instance-checker
 
 # Argo CD
 
@@ -67,7 +67,7 @@ kubectl config set-context --current --namespace=argocd
 
 # Creating Apps Via CLI
 argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace guestbook
-argocd app create cto-wizard --repo https://github.com/fdervisi/k8s_cicd_overview.git --path kubernetes --dest-server https://kubernetes.default.svc --dest-namespace cto-wizard
+argocd app create aws-ec2-instance-checker --repo https://github.com/fdervisi/k8s_cicd_overview.git --path kubernetes --dest-server https://kubernetes.default.svc --dest-namespace aws-ec2-instance-checker
 
 
 argocd repo add git@github.com:argoproj/argocd-example-apps.git --ssh-private-key-path ~/.ssh/id_rsa
@@ -84,7 +84,7 @@ argocd app sync guestbook
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cto-wizard
+  name: aws-ec2-instance-checker
   namespace: argocd
 spec:
   project: default
@@ -94,7 +94,7 @@ spec:
     path: kubernetes
   destination:
     server: https://kubernetes.default.svc
-    namespace: cto-wizard
+    namespace: aws-ec2-instance-checker
   syncPolicy:
     automated: {}
 
@@ -102,7 +102,7 @@ spec:
 # Commands
 kubectl apply -f argo-cd-manifest.yaml
 argocd app list
-argocd app delete cto-wizard --cascade
+argocd app delete aws-ec2-instance-checker --cascade
 
 
 

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "cto-wizard.fullname" . }}
+  name: {{ include "aws-ec2-instance-checker.fullname" . }}
   namespace: {{ .Values.namespace }}
 spec:
   type: {{ .Values.frontend.service.type }}
@@ -9,4 +9,4 @@ spec:
     - port: {{ .Values.frontend.service.port }}
       targetPort: {{ .Values.frontend.containerPort }}
   selector:
-    app: {{ include "cto-wizard.name" . }}
+    app: {{ include "aws-ec2-instance-checker.name" . }}

@@ -27,5 +27,5 @@ jobs:
         context: .
         push: true
         tags: |
-          fdervisi/cto-wizard:${{ github.run_number }}.0.0
-          fdervisi/cto-wizard:latest
+          fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
+          fdervisi/aws-ec2-instance-checker:latest

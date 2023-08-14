@@ -3,7 +3,7 @@ aws route53 change-resource-record-sets --hosted-zone-id /hostedzone/Z07804972W0
         {
             "Action": "CREATE",
             "ResourceRecordSet": {
-                "Name": "cto-wizard.dervisi.net",
+                "Name": "aws-ec2-instance-checker.dervisi.net",
                 "Type": "A",
                 "AliasTarget": {
                     "HostedZoneId": "Z3ULH7SSC9OV64",

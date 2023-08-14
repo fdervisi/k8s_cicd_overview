@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "cto-wizard.fullname" . }}
+  name: {{ include "aws-ec2-instance-checker.fullname" . }}
   namespace: {{ .Values.namespace }}
   labels:
-    {{- include "cto-wizard.labels" . | nindent 4 }}
+    {{- include "aws-ec2-instance-checker.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "cto-wizard.name" . }}
+      app: {{ include "aws-ec2-instance-checker.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "cto-wizard.name" . }}
+        app: {{ include "aws-ec2-instance-checker.name" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

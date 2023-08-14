@@ -1,9 +1,9 @@
-namespace: cto-wizard
+namespace: aws-ec2-instance-checker
 frontend:
   replicaCount: 3
 
   image:
-    repository: fdervisi/cto-wizard
+    repository: fdervisi/aws-ec2-instance-checker
     tag: 14.0.0
     pullPolicy: IfNotPresent 
 

@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cto-wizard
+  name: aws-ec2-instance-checker
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: fdervisi/cto-wizard:*
+    argocd-image-updater.argoproj.io/image-list: fdervisi/aws-ec2-instance-checker:*
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/git-branch: main
 spec:
@@ -12,9 +12,9 @@ spec:
   source:
     repoURL: git@github.com:fdervisi/k8s_cicd_overview.git
     targetRevision: HEAD
-    path: helm/cto-wizard
+    path: helm/aws-ec2-instance-checker
   destination:
     server: https://kubernetes.default.svc
-    namespace: cto-wizard
+    namespace: aws-ec2-instance-checker
   syncPolicy:
     automated: {}

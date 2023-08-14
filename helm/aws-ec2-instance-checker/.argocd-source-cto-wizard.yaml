@@ -1,7 +1,7 @@
 helm:
   parameters:
   - name: image.name
-    value: fdervisi/cto-wizard
+    value: fdervisi/aws-ec2-instance-checker
     forcestring: true
   - name: image.tag
     value: 21.0.0
