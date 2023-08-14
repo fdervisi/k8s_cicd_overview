@@ -110,9 +110,9 @@
       var instanceId = $(this).data('instance-id');
       $.post('/enable_imdsv2/' + instanceId, function (data) {
         if (data.success) {
-          alert('IMDSv2 enabled successfully for instance ' + instanceId);
+          alert('IMDSv2 enabled successfully for Instance ' + instanceId);
         } else {
-          alert('Failed to enable IMDSv2 for instance ' + instanceId);
+          alert('Failed to enable IMDSv2 for Instance ' + instanceId);
         }
       });
     });
