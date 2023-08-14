@@ -24,7 +24,7 @@ flask_session/*
 *.log
 
 # Docker files
-Dockerfile
+# Dockerfile
 *.dockerignore
 
 # Directory for any IDE or text editor
