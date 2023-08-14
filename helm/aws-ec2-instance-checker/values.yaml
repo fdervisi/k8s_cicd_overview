@@ -4,7 +4,7 @@ frontend:
 
   image:
     repository: fdervisi/aws-ec2-instance-checker
-    tag: 14.0.0
+    tag: 3.0.0
     pullPolicy: IfNotPresent 
 
   service:
