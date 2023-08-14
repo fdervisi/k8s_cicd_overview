@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, jsonify, session
 from flask_session import Session
 import boto3
 import requests
-import datetime 
+import datetime
 
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -176,3 +176,4 @@ def check_imdsv1(id):
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
+    print("Hello World!")
