@@ -152,5 +152,3 @@ data:
       sshPrivateKeySecret:
         name: ssh-secret
         key: sshPrivateKey
-
-
