@@ -3,7 +3,7 @@ data:
   check_imdsv1.rego: |
     package ec2
 
-    default match = false
+    default excessive_permission = false
 
     # Check if an instance's associated role has the AmazonSSMManagedInstanceCore managed policy
     excessive_permission {
@@ -11,16 +11,12 @@ data:
         input.Role.Policies[i] == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     }
 
-    # Check the EC2 instance's metadata service and public IP
-    imds_vulnerable {
+    default match = false
+
+    match {
         input.MetadataOptions.HttpTokens == "optional"
         input.PublicIpAddress != null
-    }
-
-    # Combine the two checks into a single match rules
-    match {
         excessive_permission
-        imds_vulnerable
     }
 kind: ConfigMap
 metadata:
