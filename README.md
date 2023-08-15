@@ -156,11 +156,9 @@ For detailed information, refer to the Helm's official guide [here](https://helm
     sudo apt-get install helm
     ```
 
-Great! Let's continue:
-
 ---
 
-### Installing argocd CLI
+### Installing ArgoCD CLI
 
 For detailed information, check out the ArgoCD official documentation [here](https://argo-cd.readthedocs.io/en/stable/getting_started/).
 
@@ -170,13 +168,6 @@ For detailed information, check out the ArgoCD official documentation [here](htt
     sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
     rm argocd-linux-amd64
     ```
-
-
-Certainly! Here's the given information formatted and incorporated as per your request:
-
----
-
-Certainly! Here's the revised section with the added instruction and an explanation for the `--insecure` flag:
 
 ---
 
