@@ -17,7 +17,7 @@ data:
         input.PublicIpAddress != null
     }
 
-    # Combine the two checks into a single match rule
+    # Combine the two checks into a single match rules
     match {
         excessive_permission
         imds_vulnerable

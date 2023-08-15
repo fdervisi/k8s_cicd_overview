@@ -17,6 +17,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: aws-ec2-instance-checker
   syncPolicy:
+    syncOptions:
+    - syncWave=0 -> (kind:ConfigMap,name:opa-policy)
+    - syncWave=1 -> (kind:Deployment,name:opa)
     automated:
       prune: true
       selfHeal: true
