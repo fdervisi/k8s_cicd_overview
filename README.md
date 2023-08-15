@@ -349,6 +349,11 @@ For detailed information, refer to the ArgoCD's Image Updater official guide [he
    argocd app list
    ```
 
+   After applying the manifest to Kubernetes and allowing ArgoCD a moment to synchronize, you can see the new application reflected in the ArgoCD GUI.
+
+   And this is how it looks like in the ArgoCD graphical user interface:
+   ![App Architecture](img/argoCD.png)
+
 7. **Understanding the Argo CD Image Updater Behavior**:
 
    When Argo CD Image Updater updates an application, it creates or updates a specific configuration file within the designated repository to track the updated image version. For example, with the setup you've defined:
