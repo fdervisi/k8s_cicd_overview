@@ -322,13 +322,13 @@ For detailed information, refer to the ArgoCD's Image Updater official guide [he
             allowEmpty: true
    ```
 
-  After saving the manifest, apply it to Kubernetes:
+    After saving the manifest, apply it to Kubernetes:
 
-  ```bash
-  kubectl apply -f argocd-app.yaml
-  ```
+    ```bash
+    kubectl apply -f argocd-app.yaml
+    ```
 
-  This command will instruct Kubernetes to create the resources defined in the `argocd-app.yaml` file. If the Application already exists, it will be updated with the new specifications from the file.
+    This command will instruct Kubernetes to create the resources defined in the `argocd-app.yaml` file. If the Application already exists, it will be updated with the new specifications from the file.
 
 ---
 
