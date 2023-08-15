@@ -4,13 +4,13 @@ data:
     package ec2
 
     default excessive_permission = false
+    default test = false
 
     # Check if an instance's associated role has the AmazonSSMManagedInstanceCore managed policy
     excessive_permission {
         some i
         input.Role.Policies[i] == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     }
-
 
     default match = false
 
