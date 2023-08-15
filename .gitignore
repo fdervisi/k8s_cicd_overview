@@ -11,6 +11,7 @@ instance/*
 
 # Flask-Session files
 */flask_session/*
+flask_session/*
 
 # Environment files
 .env
