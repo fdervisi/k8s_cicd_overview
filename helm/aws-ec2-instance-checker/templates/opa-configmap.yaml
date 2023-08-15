@@ -3,12 +3,22 @@ data:
   check_imdsv1.rego: |
     package ec2
 
+    default excessive_permission = false
+
+    # Check if an instance's associated role has the AmazonEC2FullAccess managed policy
+    excessive_permission {
+        some i
+        input.Role.Policies[i] == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
+
     default match = false
 
     match {
         input.MetadataOptions.HttpTokens == "optional"
         input.PublicIpAddress != null
+        excessive_permission
     }
+
 kind: ConfigMap
 metadata:
   creationTimestamp: null
