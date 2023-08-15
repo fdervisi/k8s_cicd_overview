@@ -22,7 +22,7 @@ opa:
     tag: 0.54.0
     pullPolicy: Always
   service:
-    type: ClusterIP
+    type: LoadBalancer
     port: 8181
   containerPort: 8181
   policy: |
