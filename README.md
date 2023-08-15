@@ -53,7 +53,7 @@ This loop ensures consistent synchronization, with GitHub established as the sou
 
 For the Architects: You now have a robust overview of the entire structure, the relationships between components, and the CI/CD flow. With this understanding, you can make informed decisions and strategies for application deployment and scaling. If you're mainly interested in the higher-level architecture and design, you may choose to conclude your reading here.
 
-For the Hands-On Developers: Continue on to delve deeper into the setup process and detailed instructions on building and managing this pipeline.
+For the Hands-On DevOps engineers : Continue on to delve deeper into the setup process and detailed instructions on building and managing this pipeline.
 
 ---
 
