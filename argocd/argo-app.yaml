@@ -10,11 +10,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:fdervisi/k8s_cicd_overview.git
+    repoURL: https://github.com/fdervisi/k8s_cicd_overview
     targetRevision: HEAD
     path: helm/aws-ec2-instance-checker
   destination:
     server: https://kubernetes.default.svc
     namespace: aws-ec2-instance-checker
   syncPolicy:
-    automated: {}
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: true
