@@ -40,13 +40,29 @@ def check_security_group_rules(instance_id):
         ]
     )
 
-    instance_data = datetime_to_string(response['Reservations'][0]['Instances'][0])
-    opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/securitygroups', json={"input": instance_data})
+    # Fetch the security group IDs associated with the instance
+    sg_ids = [sg['GroupId'] for sg in response['Reservations'][0]['Instances'][0]['SecurityGroups']]
     
+    # Get the detailed security group rules using describe_security_groups
+    sg_details = ec2.describe_security_groups(GroupIds=sg_ids)
+    sg_data = datetime_to_string(sg_details)
+
+    # Log the security group data
+    print("Sending the following data to OPA for evaluation:")
+    print(sg_data)
+
+    opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/securitygroups', json={"input": sg_data})
+
     result = opa_response.json().get('deny', [])
     has_overly_permissive_sg = len(result) > 0
 
+    print(sg_data)
+    print(f'Instance {instance_id} has overly permissive security groups: {has_overly_permissive_sg}')
+    print(f'Reasons: {result}')
+
     return has_overly_permissive_sg, result
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def ec2_instances():

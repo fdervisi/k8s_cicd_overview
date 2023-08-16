@@ -4,31 +4,10 @@ data:
     package ec2.securitygroups
 
     # Deny if there are security groups that allow unrestricted access
-    deny["Security group allows unrestricted access"] {
+    deny["Security group allows unrestricted access to port " + port] {
         input.SecurityGroups[_].IpPermissions[_].IpRanges[_].CidrIp == "0.0.0.0/0"
+        port = tostring(input.SecurityGroups[_].IpPermissions[_].FromPort)
     }
-
-    # Deny if port 22 (SSH) is open to the world
-    deny["SSH port is open to the world"] {
-        input.SecurityGroups[_].IpPermissions[_].IpRanges[_].CidrIp == "0.0.0.0/0"
-        input.SecurityGroups[_].IpPermissions[_].FromPort <= 22
-        input.SecurityGroups[_].IpPermissions[_].ToPort >= 22
-    }
-
-    # Deny if port 3389 (RDP) is open to the world
-    deny["RDP port is open to the world"] {
-        input.SecurityGroups[_].IpPermissions[_].IpRanges[_].CidrIp == "0.0.0.0/0"
-        input.SecurityGroups[_].IpPermissions[_].FromPort <= 3389
-        input.SecurityGroups[_].IpPermissions[_].ToPort >= 3389
-    }
-
-    # Deny if port 3306 (MySQL) is open to the world
-    deny["MySQL port is open to the world"] {
-        input.SecurityGroups[_].IpPermissions[_].IpRanges[_].CidrIp == "0.0.0.0/0"
-        input.SecurityGroups[_].IpPermissions[_].FromPort <= 3306
-        input.SecurityGroups[_].IpPermissions[_].ToPort >= 3306
-    }
-
 kind: ConfigMap
 metadata:
   creationTimestamp: null
