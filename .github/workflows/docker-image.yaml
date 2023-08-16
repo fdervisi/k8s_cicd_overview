@@ -1,4 +1,4 @@
-name: Build, Push Docker Image and CodeQL Analysis
+name: Build, Push Docker Image, and CodeQL Analysis
 
 on:
   push:
@@ -7,17 +7,18 @@ on:
     - 'aws-ec2-instance-checker/**'
 
 jobs:
-  build:
+  build-and-scan:
     runs-on: ubuntu-latest
 
     steps:
     - name: Check Out Code
       uses: actions/checkout@v2
 
+    # CodeQL Initialization
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
+      uses: github/codeql-action/init@v2
       with:
-        languages: 'python' # Assuming your service is in Python due to Flask. Adjust if needed.
+        languages: 'python' # Change this to match your language; for Flask, it's Python
 
     - name: Log in to DockerHub
       uses: docker/login-action@v1
@@ -34,5 +35,6 @@ jobs:
           fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
           fdervisi/aws-ec2-instance-checker:latest
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1
+    # CodeQL Analysis
+    - name: Analyze with CodeQL
+      uses: github/codeql-action/analyze@v2
