@@ -403,50 +403,50 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
    Below is a breakdown of a sample `.yaml` configuration:
 
    ```yaml
-  name: Build, Push Docker Image, and Code Analysis
+    name: Build, Push Docker Image, and Code Analysis
 
-    on:
-      push:
-        branches: [ master ]
-        paths:
-        - 'aws-ec2-instance-checker/**'
+      on:
+        push:
+          branches: [ master ]
+          paths:
+          - 'aws-ec2-instance-checker/**'
 
-    jobs:
-      build:
-        runs-on: ubuntu-latest
+      jobs:
+        build:
+          runs-on: ubuntu-latest
 
-        steps:
-        - name: Check Out Code
-          uses: actions/checkout@v2
+          steps:
+          - name: Check Out Code
+            uses: actions/checkout@v2
 
-        - name: Set up Python
-          uses: actions/setup-python@v2
-          with:
-            python-version: '3.10' # adjust this based on your project's Python version
+          - name: Set up Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: '3.10' # adjust this based on your project's Python version
 
-        - name: Install Dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install bandit
+          - name: Install Dependencies
+            run: |
+              python -m pip install --upgrade pip
+              pip install bandit
 
-        - name: Run Bandit
-          run: bandit -r aws-ec2-instance-checker
-          continue-on-error: true
+          - name: Run Bandit
+            run: bandit -r aws-ec2-instance-checker
+            continue-on-error: true
 
-        - name: Log in to DockerHub
-          uses: docker/login-action@v1
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          - name: Log in to DockerHub
+            uses: docker/login-action@v1
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: Build and Push Docker Image
-          uses: docker/build-push-action@v2
-          with:
-            context: aws-ec2-instance-checker
-            push: true
-            tags: |
-              fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
-              fdervisi/aws-ec2-instance-checker:latest
+          - name: Build and Push Docker Image
+            uses: docker/build-push-action@v2
+            with:
+              context: aws-ec2-instance-checker
+              push: true
+              tags: |
+                fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
+                fdervisi/aws-ec2-instance-checker:latest
   ```
 
    **Trigger Events**:
