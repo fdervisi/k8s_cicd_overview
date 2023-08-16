@@ -14,8 +14,6 @@ spec:
       labels:
         app: opa
       name: opa
-      annotations:
-        configmap.revision: {{ (include "opa-policy" .) | sha256sum }}
     spec:
       containers:
         - name: opa
