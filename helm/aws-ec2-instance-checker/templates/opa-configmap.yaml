@@ -8,7 +8,7 @@ data:
     # Check if an instance's associated role has the AmazonSSMManagedInstanceCore managed policy
     match {
         some i
-        input.Role.Policies[i] == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        input.Reservations[_].Instances[_].IamInstanceProfile.Arn == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
     }
 kind: ConfigMap
 metadata:
