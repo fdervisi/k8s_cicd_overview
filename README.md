@@ -68,9 +68,6 @@ Argo CD, a GitOps gem for Kubernetes, ensures the desired application state (def
 
 Helm, dubbed the package manager for Kubernetes, demystifies deployment complexities. For our application, Helm charts detail the Kubernetes resources, empowering Argo CD to oversee and refresh the deployment seamlessly.
 
-![CICD Pipeline](img/CICD.png)
-
-
 ---
 
 ## The Symphony of Deployment
