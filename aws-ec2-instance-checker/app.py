@@ -13,6 +13,15 @@ Session(app)
 OPA_URL = os.getenv('OPA_URL')
 
 def datetime_to_string(data):
+    """
+    Converts datetime objects to string format recursively in a dictionary or list.
+
+    Args:
+        data (dict or list): The data to be converted.
+
+    Returns:
+        dict or list: The converted data.
+    """
     if isinstance(data, dict):
         return {k: datetime_to_string(v) for k, v in data.items()}
     elif isinstance(data, list):
@@ -22,50 +31,15 @@ def datetime_to_string(data):
     else:
         return data
 
-def check_security_group_rules(instance_id):
-    access_key = session.get('access_key')
-    secret_key = session.get('secret_key')
-    region = session.get('region')
-    
-    aws_session = boto3.Session(
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key,
-        region_name=region
-    )
-    
-    ec2 = aws_session.client('ec2')
-    response = ec2.describe_instances(
-        InstanceIds=[
-            instance_id,
-        ]
-    )
-
-    # Fetch the security group IDs associated with the instance
-    sg_ids = [sg['GroupId'] for sg in response['Reservations'][0]['Instances'][0]['SecurityGroups']]
-    
-    # Get the detailed security group rules using describe_security_groups
-    sg_details = ec2.describe_security_groups(GroupIds=sg_ids)
-    sg_data = datetime_to_string(sg_details)
-
-    # Log the security group data
-    print("Sending the following data to OPA for evaluation:")
-    print(sg_data)
-
-    opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/securitygroups', json={"input": sg_data})
-
-    result = opa_response.json().get('deny', [])
-    has_overly_permissive_sg = len(result) > 0
-
-    print(sg_data)
-    print(f'Instance {instance_id} has overly permissive security groups: {has_overly_permissive_sg}')
-    print(f'Reasons: {result}')
-
-    return has_overly_permissive_sg, result
-
-
 
 @app.route('/', methods=['GET', 'POST'])
 def ec2_instances():
+    """
+    Renders the instances.html template with a list of EC2 instances.
+
+    Returns:
+        str: The rendered HTML template.
+    """
     if request.method == 'POST':
         session['access_key'] = request.form['access_key']
         session['secret_key'] = request.form['secret_key']
@@ -91,15 +65,14 @@ def ec2_instances():
                 for tag in instance.tags:
                     if tag['Key'] == 'Name':
                         name = tag['Value']
-            has_overly_permissive_sg, reasons = check_security_group_rules(instance.id)
+            is_imdsv1 = check_imdsv1(instance.id)
             instances_list.append({
                 'id': instance.id,
                 'name': name,
                 'state': instance.state['Name'],
                 'type': instance.instance_type,
                 'public_ip': instance.public_ip_address,
-                'has_overly_permissive_sg': has_overly_permissive_sg,
-                'exposed_reasons': reasons
+                'is_imdsv1': is_imdsv1
             })
         
         return render_template('instances.html', instances=instances_list)
@@ -108,6 +81,15 @@ def ec2_instances():
 
 @app.route('/instance/<id>', methods=['GET'])
 def instance(id):
+    """
+    Returns the details of an EC2 instance with the given ID.
+
+    Args:
+        id (str): The ID of the EC2 instance.
+
+    Returns:
+        dict: The details of the EC2 instance in JSON format.
+    """
     access_key = session.get('access_key')
     secret_key = session.get('secret_key')
     region = session.get('region')
@@ -129,6 +111,15 @@ def instance(id):
 
 @app.route('/enable_imdsv2/<id>', methods=['POST'])
 def enable_imdsv2(id):
+    """
+    Enables IMDSv2 for the EC2 instance with the given ID.
+
+    Args:
+        id (str): The ID of the EC2 instance.
+
+    Returns:
+        dict: A JSON object indicating whether the operation was successful.
+    """
     access_key = session.get('access_key')
     secret_key = session.get('secret_key')
     region = session.get('region')
@@ -150,6 +141,38 @@ def enable_imdsv2(id):
     except Exception as e:
         print(e)
         return jsonify(success=False)
+
+def check_imdsv1(id):
+    """
+    Checks whether the EC2 instance with the given ID is using IMDSv1.
+
+    Args:
+        id (str): The ID of the EC2 instance.
+
+    Returns:
+        bool: True if the instance is using IMDSv1, False otherwise.
+    """
+    access_key = session.get('access_key')
+    secret_key = session.get('secret_key')
+    region = session.get('region')
+    
+    aws_session = boto3.Session(
+        aws_access_key_id=access_key,
+        aws_secret_access_key=secret_key,
+        region_name=region
+    )
+    
+    ec2 = aws_session.client('ec2')
+    response = ec2.describe_instances(
+        InstanceIds=[
+            id,
+        ]
+    )
+
+    instance_data = datetime_to_string(response['Reservations'][0]['Instances'][0])
+    opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/match', json={"input": instance_data})
+
+    return opa_response.json()['result']
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

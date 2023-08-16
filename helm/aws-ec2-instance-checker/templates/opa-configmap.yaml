@@ -1,12 +1,12 @@
 apiVersion: v1
 data:
   check_imdsv1.rego: |
-    package ec2.securitygroups
+    package ec2
 
-    # Deny if there are security groups that allow unrestricted access
-    deny["Security group allows unrestricted access to port " + port] {
-        input.SecurityGroups[_].IpPermissions[_].IpRanges[_].CidrIp == "0.0.0.0/0"
-        port = tostring(input.SecurityGroups[_].IpPermissions[_].FromPort)
+    default match = false
+
+    match {
+        input.MetadataOptions.HttpTokens == "optional"
     }
 kind: ConfigMap
 metadata:
