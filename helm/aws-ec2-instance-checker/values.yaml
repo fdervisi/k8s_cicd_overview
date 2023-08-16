@@ -5,7 +5,7 @@ frontend:
   image:
     repository: fdervisi/aws-ec2-instance-checker
     tag: 3.0.0
-    pullPolicy: IfNotPresent 
+    pullPolicy: Always 
 
   service:
     type: LoadBalancer
