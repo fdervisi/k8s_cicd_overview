@@ -5,7 +5,7 @@ data:
 
     default match = false
 
-    # Check if an instance's associated role has the AmazonSSMManagedInstanceCore managed policy
+    # Check if an instance's associated role has the AmazonSSMManagedInstanceCore managed policy tewst
     match {
         some i
         input.Reservations[_].Instances[_].IamInstanceProfile.Arn == "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
