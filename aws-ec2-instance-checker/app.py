@@ -17,7 +17,7 @@ def datetime_to_string(data):
     Converts datetime objects to string format recursively in a dictionary or list.
 
     Args:
-        data (dict or list): The data to be converted..
+        data (dict or list): The data to be converted.
 
     Returns:
         dict or list: The converted data.
