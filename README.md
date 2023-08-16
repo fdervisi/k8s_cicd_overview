@@ -1,4 +1,4 @@
-# Harnessing Seamless Deployments: A Guide to AWS EC2 Instance Checker & CI/CD Integration
+# GitOps in Action: Mastering CI/CD with Microservice-Based Applications
 
 In today's dynamic DevOps landscape, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is not just a trend—it's a game-changer. Enter the AWS EC2 Instance Checker: developed with the Flask web framework, this tool connects users to AWS EC2 instances, making automated CI/CD deployments in Kubernetes a breeze.
 
