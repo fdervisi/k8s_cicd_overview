@@ -16,3 +16,5 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: opa-policy
+  annotations:
+    checksum/data: {{ .Files.Get "helm/aws-ec2-instance-checker/templates/opa-configmap.yaml" | sha256sum }}

@@ -15,7 +15,7 @@ spec:
         app: opa
       name: opa
       annotations:
-        configmap.revision: {{ .Files.Get "helm/aws-ec2-instance-checker/templates/opa-configmap.yaml" | sha256sum }}
+        configmap.revision: {{ (include "opa-policy" .) | sha256sum }}
     spec:
       containers:
         - name: opa
