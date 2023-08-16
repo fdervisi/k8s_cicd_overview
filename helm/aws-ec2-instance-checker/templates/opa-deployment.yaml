@@ -4,6 +4,9 @@ metadata:
   name: opa
   labels:
     app: opa
+  annotations:
+    configmap.reloader.stakater.com/reload: "opa-policy"
+spec:
 spec:
   replicas: {{ .Values.opa.replicaCount }}
   selector:
