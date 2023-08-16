@@ -400,7 +400,7 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
    - Click on the **Actions** tab.
    - Choose **New Workflow** or define a custom one.
 
-   Below is a breakdown of a sample  ![GitHubAction](.github/workflows/docker-image.yaml) configuration:
+   Below is a breakdown of a sample [GitHubAction](.github/workflows/docker-image.yaml) configuration:
 
 
 
