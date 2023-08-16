@@ -144,7 +144,7 @@ def enable_imdsv2(id):
 
 def check_imdsv1(id):
     """
-    Checks whether the EC2 instance with the given ID is using IMDSv1.
+    Checks whether the EC2 instance with the given ID is using IMDSv1..
 
     Args:
         id (str): The ID of the EC2 instance.
