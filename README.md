@@ -1,155 +1,124 @@
-# Harnessing Seamless Deployments: A Comprehensive Guide to AWS EC2 Instance Checker with CI/CD Integration
+# Harnessing Seamless Deployments: A Guide to AWS EC2 Instance Checker & CI/CD Integration
 
-In the fast-paced world of DevOps, merging cloud resources with Continuous Integration/Continuous Deployment (CI/CD) is more than a fleeting trend—it's a transformative shift. Let's delve into the AWS EC2 Instance Checker, a prime example of this integration. Crafted using the Flask web framework, this tool bridges users to AWS EC2 instances and simplifies automated CI/CD deployments in Kubernetes.
+In today's dynamic DevOps landscape, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is not just a trend—it's a game-changer. Enter the AWS EC2 Instance Checker: developed with the Flask web framework, this tool connects users to AWS EC2 instances, making automated CI/CD deployments in Kubernetes a breeze.
 
-As we journey through this exploration, we'll unpack the design, architecture, and synergy of modern DevOps tools. The driving principle? Learning by example is the most effective approach.
+While the Flask application serves as a practical example, the true focus of this guide is the broader integration and deployment mechanisms in play. In this guide, we'll dive deep into the design, architecture, and synergy of cutting-edge DevOps tools. Our motto? Learn by doing.
 
-This guide serves two distinct audiences: Architects aiming to understand the structure and relationships in a microservice application integrated with CI/CD and GitOps, and the hands-on DevOps engineers looking to build their own pipelines using this guide as a foundation.
+Whether you're an architect eager to grasp the intricacies of a microservice application combined with CI/CD and GitOps, or a hands-on DevOps engineer aiming to craft robust pipelines, this guide has got you covered.
 
----
-
-## Prerequisites
-
-Before diving into the details of harnessing seamless deployments with the AWS EC2 Instance Checker and CI/CD integration, it's essential to ensure you're equipped with the foundational knowledge and tools. Here's a checklist to get you started:
-
-1. **Basic Understanding of DevOps**: Familiarize yourself with the principles of DevOps, especially as it pertains to continuous integration and continuous deployment (CI/CD). 
-
-2. **Kubernetes Knowledge**: Given that several sections of this guide delve into Kubernetes configurations and deployments, a basic understanding of Kubernetes is necessary. If you're new to Kubernetes, consider checking out the [official documentation](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/).
-
-3. **Docker and Containers**: This guide often references Docker containers. Knowledge about containerization, especially using Docker, will be beneficial. For a refresher, see [Docker's official documentation](https://docs.docker.com/get-started/overview/).
-
-4. **Git & GitHub**: Since we leverage GitHub Actions and other Git-based tools, familiarity with Git commands and GitHub's interface will be crucial. If you're new to Git, consider this [Git Basics Guide](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics).
-
-5. **AWS EC2 Basics**: As the primary focus of this guide is the AWS EC2 Instance Checker, understanding what AWS EC2 instances are and how they function can be beneficial. For an overview, check out [AWS's official EC2 documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html).
-
-6. **Access to a Kubernetes Cluster**: To practically implement the steps in this guide, you'll need access to a Kubernetes cluster. This could be a local development cluster (like [Minikube](https://minikube.sigs.k8s.io/docs/start/)) or a cloud-based solution (like [AWS EKS](https://aws.amazon.com/eks/)).
-
-7. **Required Software**: Ensure you have the necessary software installed or access to install them:
-   - `kubectl` – Command-line tool for Kubernetes.
-   - Docker – For building and managing containers.
-   - Helm – For managing Kubernetes packages.
-   - ArgoCD – For continuous delivery in Kubernetes.
-
-8. **GitHub Account**: Since we utilize GitHub Actions, you'll need a GitHub account and repository to set up the CI/CD workflows.
-
-9. **DockerHub Account**: For storing Docker images built through GitHub Actions, you'll need a DockerHub account.
-
-Once you've familiarized yourself with the above essentials and ensured you have the necessary tools at your disposal, you're all set to delve into the guide!
+![CICD Pipeline](img/CICD.png)
 
 ---
 
 ## Tool Alternatives
 
-In the realm of DevOps, while some tools have gained notable popularity and widespread adoption, it's always beneficial to be aware of alternative solutions. They might offer unique features or align better with specific project needs. Let's explore some popular alternatives to the tools mentioned in this guide:
+In the vast DevOps landscape, a myriad of tools have made their mark. While some are frontrunners, others shine with unique features catering to specific needs. Here's a roundup of alternatives to the primary tools highlighted in this guide:
 
-1. **GitHub Actions Alternatives**:
-   - **Jenkins**: A widely adopted open-source automation server that supports building, deploying, and automating any project.
-   - **GitLab CI/CD**: Integrated CI/CD solution from GitLab.
-   - **CircleCI**: A CI/CD platform that supports Docker and Kubernetes orchestration.
-   - **Travis CI**: A cloud-based CI/CD service integrated with GitHub repositories.
+1. **Alternatives to GitHub Actions**:
+   - **Jenkins**: An open-source automation powerhouse for building, deploying, and automating projects.
+   - **GitLab CI/CD**: GitLab's own take on continuous integration and deployment.
+   - **CircleCI**: A robust CI/CD platform with Docker and Kubernetes support.
+   - **Travis CI**: A cloud service that dovetails neatly with GitHub repositories.
 
-2. **Argo CD Alternatives**:
-   - **Flux**: A GitOps tool for Kubernetes, originally developed by Weaveworks.
-   - **Jenkins X**: An open-source CI/CD solution for modern cloud applications on Kubernetes.
-   - **Spinnaker**: A multi-cloud continuous delivery platform.
+2. **Alternatives to Argo CD**:
+   - **Flux**: A GitOps tool tailored for Kubernetes, birthed by Weaveworks.
+   - **Jenkins X**: Zeroes in on CI/CD for cloud-ready applications on Kubernetes.
+   - **Spinnaker**: A versatile platform for multi-cloud continuous delivery.
 
-3. **Helm Alternatives**:
-   - **Kustomize**: A standalone tool to customize Kubernetes objects through a kustomization file.
-   - **Skaffold**: Handles the workflow for building, pushing, and deploying applications in Kubernetes.
-   - **Terraform**: An infrastructure as code tool that supports provisioning of Kubernetes resources.
+3. **Alternatives to Helm**:
+   - **Kustomize**: Customizes Kubernetes objects via a unique kustomization file.
+   - **Skaffold**: Manages the workflow for crafting, pushing, and deploying applications in Kubernetes.
+   - **Terraform**: A code-first approach to provisioning Kubernetes resources.
 
-4. **Docker Hub Alternatives**:
-   - **Quay.io**: A container image registry by Red Hat.
-   - **Google Container Registry (GCR)**: Google's managed container image storage solution.
-   - **Amazon Elastic Container Registry (ECR)**: AWS's managed Docker container registry.
+4. **Alternatives to Docker Hub**:
+   - **Quay.io**: Red Hat's answer to container image registry needs.
+   - **Google Container Registry (GCR)**: Google's dedicated container image storage.
+   - **Amazon Elastic Container Registry (ECR)**: AWS's take on a Docker container registry.
 
-Being aware of these alternatives allows teams to make informed decisions based on project requirements, existing toolchains, or personal preferences. Moreover, the vibrant landscape of DevOps tools ensures that there's a solution out there for every need, and sometimes mixing and matching tools from different ecosystems can lead to a highly optimized workflow.
+Exploring these alternatives empowers teams to make decisions rooted in project needs, existing toolchains, or even personal preference. The dynamic world of DevOps tools ensures a fit for every requirement, and sometimes, blending tools from varied ecosystems can craft an optimal workflow.
 
 ---
 
-## Diving into AWS EC2 Instance Checker
+## Exploring the AWS EC2 Instance Checker
 
-At its core, the AWS EC2 Instance Checker, powered by Python and Flask, serves as a gateway to AWS EC2 instances. Here's what it can do for you:
+Built with Python and Flask, the AWS EC2 Instance Checker acts as your bridge to AWS EC2 instances, offering the following features:
 
-- **List EC2 Instances**: Fetch and display all your AWS EC2 instances.
-- **Detail Specific Instances**: Dive deeper into specifics by selecting any instance.
-- **Upgrade to IMDSv2**: Elevate the metadata service of your instances with just a click.
-- **Verify Metadata Service Version**: Keep tabs on the metadata service version of each instance.
+- **View EC2 Instances**: Easily fetch and display all your AWS EC2 instances.
+- **Inspect Instance Details**: Get in-depth information about any selected instance.
+- **Upgrade Metadata Service**: With a simple click, transition your instances to IMDSv2.
+- **Check Metadata Service Version**: Monitor the metadata service version of your instances effortlessly.
 
 ![App Architecture](img/CTO-APP.png)
 
 ---
 
-## Modern CI/CD Tools: Synergy in Action
+## Modern CI/CD Tools: Working in Harmony
 
-Central to the prowess of the AWS EC2 Instance Checker is its seamless integration with today's top CI/CD tools. Let's unpack the role of each tool in this ensemble:
+Any microservice-based application shines brightest when integrated with leading CI/CD tools. Here's a deep dive into each tool's role:
 
-### 1. GitHub Actions: The Heartbeat of Workflow Automation
+### 1. GitHub Actions: Automating Workflows with Precision
 
-Think of streamlining your software workflows right within GitHub; that's what GitHub Actions achieves. For our application, any changes to the `main` branch beckon GitHub Actions. It then crafts a Docker image and sends it to DockerHub.
+GitHub Actions streamlines software workflows right within GitHub. For our AWS EC2 Instance Checker, any modifications to the `main` branch activate GitHub Actions. It then assembles a Docker image and dispatches it to DockerHub.
 
-### 2. Argo CD & Argo CD Image Updater: The Choreographers of Kubernetes Deployment
+### 2. Argo CD & Argo CD Image Updater: Orchestrating Kubernetes Deployments
 
-Enter Argo CD, a declarative, GitOps continuous delivery gem designed for Kubernetes. It shoulders the responsibility of ensuring our application's desired state (as defined in a Git repository) aligns with the Kubernetes cluster's actual state. Pair this with Argo CD Image Updater, and you're looking at a formidable duo that deploys and keeps Kubernetes manifests synchronized with the latest Docker images.
+Argo CD, a GitOps gem for Kubernetes, ensures the desired application state (defined in Git) matches the actual state in the Kubernetes cluster. Paired with Argo CD Image Updater, these two ensure smooth deployments and synchronization of Kubernetes manifests with the freshest Docker images.
 
-### 3. Helm: The Maestro of Kubernetes Package Management
+### 3. Helm: Simplifying Kubernetes Deployments
 
-Helm, recognized as Kubernetes' package manager, simplifies the intricacies of deployment. Our application's Helm chart outlines the Kubernetes resources in detail, enabling Argo CD to manage and update the application deployment effortlessly.
+Helm, dubbed the package manager for Kubernetes, demystifies deployment complexities. For our application, Helm charts detail the Kubernetes resources, empowering Argo CD to oversee and refresh the deployment seamlessly.
 
-![CICD Pipline](img/CICD.png)
+![CICD Pipeline](img/CICD.png)
+
 
 ---
 
 ## The Symphony of Deployment
 
-Navigating through buzzwords like CI/CD, ArgoCD, GitHub Actions, and Helm might feel overwhelming. But, we're here to demystify! Here's a simplified breakdown:
+Navigating the buzzwords like CI/CD, ArgoCD, GitHub Actions, and Helm can be daunting. But fear not, we're here to simplify! Let's break down the process:
 
-1. **Initialization**: ArgoCD syncs the Helm deployment in Kubernetes, marking GitHub as the definitive source.
-2. **Commit & Build**: A developer's commit in the Python code activates GitHub Actions, which in turn crafts a container and propels it to Docker Hub.
-3. **Monitor & Update**: Argo CD Image Updater keeps an eye on GitHub. On detecting a new container version, it tweaks the Helm charts, leading to an updated Kubernetes deployment.
+1. **Initialization**: ArgoCD initializes the Helm deployment in Kubernetes, designating GitHub as the primary source.
+2. **Commit & Build**: When a developer commits Python code, GitHub Actions springs into action, building a container and pushing it to Docker Hub.
+3. **Monitor & Update**: Argo CD Image Updater watches GitHub. Upon spotting a new container version, it updates the Helm charts, resulting in a refreshed Kubernetes deployment.
 
-This loop ensures consistent synchronization, with GitHub established as the source of truth.
+This cyclical process ensures that GitHub remains the central reference point, keeping everything in sync.
 
-For the Architects: You now have a robust overview of the entire structure, the relationships between components, and the CI/CD flow. With this understanding, you can make informed decisions and strategies for application deployment and scaling. If you're mainly interested in the higher-level architecture and design, you may choose to conclude your reading here.
+**For Architects**: Armed with this overview, you can grasp the intricate relationships and the flow of CI/CD. This knowledge equips you to strategize for efficient deployment and scaling. If you're leaning towards high-level architecture, you might wrap up your reading here.
 
-For the Hands-On DevOps engineers : Continue on to delve deeper into the setup process and detailed instructions on building and managing this pipeline.
+**For Hands-On DevOps Engineers**: Eager to dive into the nitty-gritty? Read on for detailed setup instructions and insights into building and managing this pipeline.
 
 ---
 
 ## Setting up Your DevOps Arsenal
 
-Embarking on this DevOps journey requires some setup. Whether you're a seasoned developer or just starting, our guide will walk you through setting up the tools you need.
+Embarking on a DevOps adventure necessitates some groundwork. Whether you're a DevOps veteran or a beginner, this guide is designed to assist you in setting up essential tools.
 
-## Introduction
+### Introduction
 
-This guide provides a comprehensive walkthrough on setting up various tools, such as `kubectl`, `Helm`, `ArgoCD`, and more, on your Linux system. We aim to provide clear, concise, and in-depth instructions to cater to both novices and experts. If you already have tools like `kubectl` and a cluster set up, or any other steps completed, please feel free to skip the relevant installations and proceed to the sections you need.
+We'll walk you through the setup of key tools like `kubectl`, `Helm`, `ArgoCD`, and more for your Linux system. Our goal is to offer straightforward and detailed instructions for both newcomers and seasoned professionals. If you've already set up tools like `kubectl` or have an existing cluster, feel free to skip those steps and jump to the sections relevant to you.
 
-## Table of Contents
+### Table of Contents
 
 - [Installation Procedures](#installation-procedures)
     - [Installing kubectl](#installing-kubectl)
     - [Installing Helm](#installing-helm)
     - [Installing argocd CLI](#installing-argocd-cli)
     - [Installing ArgoCD](#installing-argocd)
-    - [Setting up ArgoCD Image updater](#setting-up-argocd-image-updater)
-    - [Setting up GitHub Actions](#setting-up-github-actions)
+    - [Setting up ArgoCD Image Updater](#setting-up-argocd-image-updater)
+    - [Configuring GitHub Actions](#setting-up-github-actions)
 - [Conclusion and Next Steps](#conclusion-and-next-steps)
 
-## Installation Procedures
+### Installing `kubectl`
 
----
+For a more detailed guide, you can consult the official Kubernetes documentation [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
 
-### Installing kubectl
-
-For detailed information, refer to the official Kubernetes documentation [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
-
-1. **Prepare your system**:
+1. **Prepare Your System**:
     ```bash
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
     ```
 
-2. **Set up the Kubernetes apt repository**:
+2. **Set up the Kubernetes apt Repository**:
     ```bash
     sudo mkdir /etc/apt/keyrings
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -161,57 +130,53 @@ For detailed information, refer to the official Kubernetes documentation [here](
     sudo apt-get install -y kubectl
     ```
 
-### Adding a New Context to `kubeconfig` for kubectl
+### Adding Contexts to `kubeconfig` for `kubectl`
 
-After successfully installing `kubectl`, if you're working with multiple Kubernetes clusters, you might need to set up different contexts to switch seamlessly between these clusters.
+After installing `kubectl`, if you're managing multiple Kubernetes clusters, you'll benefit from setting up contexts for seamless switching.
 
 1. **Prerequisites**:
-
-    Ensure you have `kubectl` installed by checking its version:
+    Verify `kubectl` installation:
     ```bash
     kubectl version
     ```
 
-2. **Set up a new context**:
-   
-    Assume you've obtained credentials for a new Kubernetes cluster. To configure a new context, you need specifics about the cluster, user, and possibly a namespace.
+2. **Define a New Context**:
 
-    Firstly, define the cluster:
+    First, detail the cluster:
     ```bash
     kubectl config set-cluster <CLUSTER_NAME> --server=<CLUSTER_ENDPOINT> --certificate-authority=<PATH_TO_CA>
     ```
 
-    Next, provide user credentials:
+    Then, input user credentials:
     ```bash
     kubectl config set-credentials <USER_NAME> --client-key=<PATH_TO_CLIENT_KEY> --client-certificate=<PATH_TO_CLIENT_CERT>
     ```
 
-    Finally, create the context using the defined cluster and user:
+    Lastly, create the context:
     ```bash
     kubectl config set-context <CONTEXT_NAME> --cluster=<CLUSTER_NAME> --user=<USER_NAME>
     ```
 
-3. **Verify your new context**:
-
-    To ensure your context is properly established, view it with:
+3. **Verify the New Context**:
+    Check the newly added context:
     ```bash
     kubectl config get-contexts
     ```
 
-    If your newly added context appears in the list, you can activate it using:
+    If it's listed, activate it:
     ```bash
     kubectl config use-context <CONTEXT_NAME>
     ```
 
-Remember, by establishing various contexts in your `kubeconfig`, you can efficiently manage and alternate between multiple Kubernetes clusters. Always keep your `kubeconfig` files in a secure location, as they hold crucial access details. 
+Maintain caution with your `kubeconfig` files, as they contain vital access details. By configuring multiple contexts, you can nimbly navigate different Kubernetes clusters.
 
 ---
 
 ### Installing Helm
 
-For detailed information, refer to the Helm's official guide [here](https://helm.sh/docs/intro/install/).
+For a comprehensive guide, you can refer to Helm's official documentation [here](https://helm.sh/docs/intro/install/).
 
-1. **Setup the Helm repository**:
+1. **Set up the Helm Repository**:
     ```bash
     curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
     sudo apt-get install apt-transport-https --yes
@@ -228,142 +193,118 @@ For detailed information, refer to the Helm's official guide [here](https://helm
 
 ### Installing ArgoCD CLI
 
-For detailed information, check out the ArgoCD official documentation [here](https://argo-cd.readthedocs.io/en/stable/getting_started/).
+To manage ArgoCD more effectively, its Command Line Interface (CLI) comes in handy. For a comprehensive guide, refer to the ArgoCD official documentation [here](https://argo-cd.readthedocs.io/en/stable/getting_started/).
 
-1. **Download and install latest ArgoCD version**:
+1. **Download the Latest ArgoCD Version**:
     ```bash
     curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+    ```
+
+2. **Install ArgoCD CLI**:
+    ```bash
     sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+    ```
+
+3. **Cleanup**:
+    ```bash
     rm argocd-linux-amd64
     ```
 
 ---
 
 ### Installing ArgoCD
-For detailed information, refer to the ArgoCD's official guide [here](https://argo-cd.readthedocs.io/en/stable/getting_started/).
 
-1. **Create a new namespace for ArgoCD**:
+For a detailed guide, consult ArgoCD's official documentation [here](https://argo-cd.readthedocs.io/en/stable/getting_started/).
+
+1. **Set Up a Namespace for ArgoCD**:
     ```bash
     kubectl create namespace argocd
     ```
 
-2. **Install ArgoCD into the created namespace**:
+2. **Deploy ArgoCD in the Namespace**:
     ```bash
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
     ```
 
-3. **Change the `argocd-server` service type to `LoadBalancer`**:
+3. **Modify the `argocd-server` Service Type**:
     ```bash
     kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
     ```
 
-4. **Retrieve the initial admin secret**:
+4. **Retrieve the Initial Admin Password**:
     ```bash
     kubectl get secrets -n argocd argocd-initial-admin-secret -o yaml
     echo "<-secret-string->" | base64 -d
     ```
 
-5. **Login to ArgoCD**:
+5. **Log in to ArgoCD**:
    
-   First, get the `EXTERNAL-IP` of the `argocd-server`:
+   Fetch the `EXTERNAL-IP`:
    ```bash
    kubectl get service -n argocd argocd-server
    ```
    
-   Use the obtained IP or hostname to login:
+   Log in using the IP or hostname:
    ```bash
    sudo argocd login <ARGOCD_SERVER> --insecure
    ```
 
-   The `--insecure` flag is used to disable server certificate validation. This is useful when connecting to an ArgoCD server that does not have a trusted certificate (e.g., self-signed). While it simplifies the login process, it's essential to understand that by skipping the certificate validation, you may be susceptible to "man-in-the-middle" attacks. In a production environment, you should aim to use a valid SSL/TLS certificate for ArgoCD to avoid using this flag.
+   Note: The `--insecure` flag disables certificate validation. It's useful for servers without trusted certificates but poses security risks. Always strive for a valid certificate in production setups.
 
-6. **Verify the ArgoCD installation**:
+6. **Confirm ArgoCD Installation**:
     ```bash
     argocd version
     ```
 
-    The output should resemble:
-    ```
-    argocd: v2.8.0+804d4b8
-      BuildDate: 2023-08-07T19:41:16Z
-      GitCommit: 804d4b8ca6bc4c2cf02c5c971aa923ec5b8623f0
-      GitTreeState: clean
-      GoVersion: go1.20.6
-      Compiler: gc
-      Platform: linux/amd64
-    argocd-server: v2.8.0+804d4b8
-      BuildDate: 2023-08-07T14:25:33Z
-      GitCommit: 804d4b8ca6bc4c2cf02c5c971aa923ec5b8623f0
-      GitTreeState: clean
-      GoVersion: go1.20.6
-      Compiler: gc
-      Platform: linux/amd64
-      Kustomize Version: v5.1.0 2023-06-19T16:58:18Z
-      Helm Version: v3.12.1+gf32a527
-      Kubectl Version: v0.24.2
-      Jsonnet Version: v0.20.0
-    ```
-
-7. **Update the ArgoCD password**:
+7. **Update the ArgoCD Password**:
     ```bash
     argocd account update-password
     ```
 
-With these steps, you should have ArgoCD installed and configured on your Kubernetes cluster. Adjust any specific commands or values based on your unique setup and requirements.
+After completing these steps, ArgoCD should be up and running on your Kubernetes cluster. Customize the commands as needed based on your setup.
 
 ---
 
 ### Setting up ArgoCD Image Updater
-For detailed information, refer to the ArgoCD's Image Updater official guide [here](https://argocd-image-updater.readthedocs.io/en/stable/).
+
+For an in-depth guide, you can turn to ArgoCD's Image Updater official documentation [here](https://argocd-image-updater.readthedocs.io/en/stable/).
 
 1. **Install ArgoCD Image Updater**:
     ```bash
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
     ```
 
-2. **Configure Logging Level for Troubleshooting**:
+2. **Set Logging Level for Diagnostics**:
    
-   Edit the `argocd-image-updater-config` ConfigMap to set the desired log level:
+   Modify the `argocd-image-updater-config` ConfigMap for your desired log level:
    ```yaml
    data:
      log.level: debug
    ```
 
-3. **Verify the Logs**:
+3. **Verify the Operation**:
    
-   After you've set up the Image Updater, you can inspect its logs to ensure everything's running correctly:
+   Check the logs to ensure the Image Updater is running as expected:
    ```bash
    kubectl -n argocd logs argocd-image-updater-<POD_NAME>
    ```
 
-   Ideally, the logs should indicate no applications are using the Image Updater yet.
+4. **Authorize Image Updater for GitHub**:
 
-   ```bash
-   time="2023-08-15T08:06:06Z" level=info msg="Processing results: applications=1 images_considered=0 images_skipped=0 images_updated=0 errors=0"
-   ```
-
-4. **Authorize Image Updater to Update GitHub Image Versions**:
-
-   For this, you need to create a Kubernetes secret with your GitHub username and personal access token. You can create and manage personal access tokens in GitHub by following [this guide](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
-   
-   Store the GitHub credentials in environment variables:
+   Store your GitHub credentials as environment variables. Create tokens in GitHub by following [this guide](https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens):
    ```bash
    export GITHUB_USER=<YOUR_USERNAME>
    export GITHUB_TOKEN=<YOUR_GITHUB_TOKEN>
    ```
 
-   Create the necessary secret in Kubernetes:
+   Create the necessary Kubernetes secret:
    ```bash
-   kubectl --namespace argocd \
-       create secret generic git-creds \
-       --from-literal=username=$GITHUB_USER \
-       --from-literal=password=$GITHUB_TOKEN
+   kubectl --namespace argocd create secret generic git-creds --from-literal=username=$GITHUB_USER --from-literal=password=$GITHUB_TOKEN
    ```
 
-5. **Define an Application using a Manifest**:
-
-   Now, create the ArgoCD application referencing the GitHub credentials to utilize the ArgoCD Image Updater. Make sure the manifest aligns with your project's specifics:
+5. **Define an Application with a Manifest**:
    
+   Create the ArgoCD application using the Image Updater and the stored GitHub credentials:
    ```yaml
       apiVersion: argoproj.io/v1alpha1
       kind: Application
@@ -390,18 +331,17 @@ For detailed information, refer to the ArgoCD's Image Updater official guide [he
             allowEmpty: true
    ```
 
-    After saving the manifest, apply it to Kubernetes:
+   After saving the manifest, apply it to Kubernetes:
 
-    ```bash
-    kubectl apply -f argocd-app.yaml
-    ```
+   ```bash
+   kubectl apply -f argocd-app.yaml
+   ```
 
-    This command will instruct Kubernetes to create the resources defined in the `argocd-app.yaml` file. If the Application already exists, it will be updated with the new specifications from the file.
+   This command will instruct Kubernetes to create the resources defined in the `argocd-app.yaml` file. If the Application already exists, it will be updated with the new specifications from the file.
 
-
-6. **Validate the Configuration**:
+6. **Validate Configuration**:
    
-   You can recheck the logs after setting up the application:
+   Check the Image Updater logs after setting up the application:
    ```bash
    kubectl -n argocd logs argocd-image-updater-<POD_NAME>
    ```
@@ -412,21 +352,17 @@ For detailed information, refer to the ArgoCD's Image Updater official guide [he
    time="2023-08-15T08:06:06Z" level=info msg="Processing results: applications=1 images_considered=1 images_skipped=0 images_updated=1 errors=0"
    ```
 
-   And verify the application in argocd using:
+   Verify the application in ArgoCD:
    ```bash
    argocd app list
    ```
 
-   After applying the manifest to Kubernetes and allowing ArgoCD a moment to synchronize, you can see the new application reflected in the ArgoCD GUI.
+   The new application should now be visible in the ArgoCD GUI:
+   ![App in ArgoCD](img/argoCD.png)
 
-   And this is how it looks like in the ArgoCD graphical user interface:
-   ![App Architecture](img/argoCD.png)
+7. **Understand Argo CD Image Updater Behavior**:
 
-7. **Understanding the Argo CD Image Updater Behavior**:
-
-   When Argo CD Image Updater updates an application, it creates or updates a specific configuration file within the designated repository to track the updated image version. For example, with the setup you've defined:
-
-   The Image Updater will write a file named `.argocd-source-aws-ec2-instance-checker.yaml` in the `helm` directory of your repository. This file will look something like:
+   The Image Updater modifies a specific configuration file within the repository to track updated image versions. For instance, it might produce a `.argocd-source-aws-ec2-instance-checker.yaml` file in your repository's `helm` directory. This file is crucial for Argo CD to discern which image and tag to deploy. It's vital to either include this file in the repository or exclude it, depending on your CI/CD strategy.
 
    ```yaml
    helm:
@@ -439,35 +375,33 @@ For detailed information, refer to the ArgoCD's Image Updater official guide [he
        forcestring: true
    ```
 
-   This file is instrumental for Argo CD to understand which image and tag should be deployed for the specified application. It's crucial to ensure that this file is either included in the repository (for tracking) or excluded based on your CI/CD preferences.
-
 ---
 
 ### Setting up GitHub Actions
 
-Setting up GitHub Actions requires a few setup steps. The following guide provides a basic overview of integrating Docker with GitHub Actions for an example repository:
+GitHub Actions offers a flexible platform for automating software workflows. Here, we'll guide you through integrating Docker with GitHub Actions for an example project.
 
-1. **Docker Credentials with GitHub Actions**:
+1. **Provide Docker Credentials to GitHub Actions**:
 
-   Before setting up the GitHub Action workflow, you need to securely provide your Docker credentials to GitHub Actions. Follow the steps below:
+   To securely use Docker with GitHub Actions, follow these steps:
 
-   - **Navigate to your GitHub repository**.
-   - Open the repository **Settings**.
-   - Navigate to **Secrets and variables > Actions**.
-   - Click on **New repository secret**.
-   - Create a new secret named **DOCKERHUB_USERNAME** and set its value to your Docker ID.
-   - Create a new Personal Access Token (PAT) for Docker Hub.
-   - Add this PAT as another secret in your GitHub repository with the name **DOCKERHUB_TOKEN**.
+   - Go to your **GitHub repository**.
+   - Access the repository **Settings**.
+   - Head to **Secrets and variables > Actions**.
+   - Select **New repository secret**.
+   - Create a secret named **DOCKERHUB_USERNAME** with your Docker ID.
+   - Generate a Personal Access Token (PAT) for Docker Hub.
+   - Add this PAT as another secret named **DOCKERHUB_TOKEN**.
 
-   [Further Reading on Docker Credentials in GitHub Actions](https://docs.docker.com/build/ci/github-actions/)
+   [More on Docker Credentials in GitHub Actions](https://docs.docker.com/build/ci/github-actions/)
 
-2. **GitHub Action Workflow Setup**:
+2. **Define GitHub Action Workflow**:
 
-   To set up a GitHub Action to build a Docker image and push it to Docker Hub whenever there's a push to the master branch, follow these steps:
+   Create a workflow to build a Docker image and push it to Docker Hub upon any change to the master branch:
 
-   - **Navigate to your GitHub repository**.
-   - Go to the **Actions** tab.
-   - Click on **New Workflow** and choose a template, or set up your custom workflow. Below is an example `.yml` file for the described action:
+   - Go to your **GitHub repository**.
+   - Click on the **Actions** tab.
+   - Choose **New Workflow** or define a custom one. Below is a sample `.yml` configuration:
 
    ```yaml
    name: Build and Push Docker Image
@@ -486,13 +420,13 @@ Setting up GitHub Actions requires a few setup steps. The following guide provid
        - name: Check Out Code
          uses: actions/checkout@v2
 
-       - name: Log in to DockerHub
+       - name: DockerHub Login
          uses: docker/login-action@v1
          with:
            username: ${{ secrets.DOCKERHUB_USERNAME }}
            password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-       - name: Build and Push Docker Image
+       - name: Build & Push Image
          uses: docker/build-push-action@v2
          with:
            context: aws-ec2-instance-checker
@@ -502,18 +436,24 @@ Setting up GitHub Actions requires a few setup steps. The following guide provid
              fdervisi/aws-ec2-instance-checker:latest
    ```
 
-3. **Commit and Push Your Workflow**:
+3. **Activate Your Workflow**:
 
-   After configuring your workflow, commit and push it to your repository. GitHub Actions will automatically recognize the `.yml` file and start the defined workflow whenever the triggering event occurs (in this case, a push to the master branch affecting the `aws-ec2-instance-checker` directory).
+   Commit and push your workflow. GitHub Actions will automatically detect the `.yaml` file, initiating the workflow upon any qualifying event (e.g., changes to the `aws-ec2-instance-checker` directory on the master branch).
 
 ---
 
 ## Final Reflections
 
-Integrating the AWS EC2 Instance Checker within a proficient CI/CD pipeline showcases the transformative power of today's deployment methodologies. Each code update sets into motion a streamlined process: the application is meticulously built, containerized, and seamlessly deployed to a Kubernetes cluster. This embodies the very core of GitOps—guaranteeing that the code you introduce is faithfully represented in production.
+The journey of integrating the AWS EC2 Instance Checker into a robust CI/CD pipeline beautifully illustrates modern deployment techniques. Each update triggers a series of orchestrated events: building the application, containerizing it, and deploying it seamlessly onto a Kubernetes cluster. This process exemplifies GitOps at its best, ensuring that your code is faithfully mirrored in production.
 
-As you engage with these tools and strategies, it's imperative to stay informed with the latest developments, embrace best practices, and draw inspiration from community discussions. Ensure that credentials and sensitive information are securely managed, avoiding direct embedding in your code or configurations.
+A few takeaways:
 
-So, what's next? We encourage you to experiment further, perhaps by exploring the tool alternatives mentioned or by scaling and optimizing your CI/CD pipelines. Seek out communities and forums related to DevOps to keep learning and sharing. Remember, the field of DevOps is ever-evolving, and continuous learning is the key to harnessing its full potential.
+- **Stay Updated**: As DevOps tools and methodologies evolve, it's crucial to keep up with the latest trends and best practices.
+- **Security First**: Safeguard your credentials and sensitive data. Avoid embedding them directly into your code or configurations.
+- **Continuous Learning**: The world of DevOps is vast. Engage with communities, participate in discussions, and be open to new ideas and approaches.
 
-Here's to the future of seamless deployments, enhanced security, and the evolving landscape of DevOps!
+So, what's on the horizon? Dive deeper! Explore alternative tools, refine your CI/CD pipelines, and immerse yourself in DevOps communities. Your journey has just begun, and the road ahead is full of discoveries and innovations.
+
+To a future of seamless deployments, robust security, and the ever-evolving world of DevOps!
+
+---
