@@ -409,11 +409,11 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
    The workflow is triggered whenever there's a push to the `master` branch and specifically when changes are made to files within the `aws-ec2-instance-checker` directory.
 
    ```yaml
-  on:
-    push:
-      branches: [ master ]
-      paths:
-      - 'aws-ec2-instance-checker/**'
+    on:
+      push:
+        branches: [ master ]
+        paths:
+        - 'aws-ec2-instance-checker/**'
    ```
 
    **Environment**:
