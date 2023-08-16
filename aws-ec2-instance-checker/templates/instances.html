@@ -77,33 +77,37 @@
 </head>
 
 <body>
-
-  <div class="container">
-    <h1>List of EC2 Instances</h1>
-
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>State</th>
-        <th>Type</th>
-        <th>Public IP</th>
-        <th>IMDSv1 Status</th>
-        <th>Action</th>
-      </tr>
-      {% for instance in instances %}
-      <tr>
-        <td>{{ instance.id }}</td>
-        <td><a href="/instance/{{ instance.id }}">{{ instance.name }}</a> </td>
-        <td>{{ instance.state }}</td>
-        <td>{{ instance.type }}</td>
-        <td>{{ instance.public_ip }}</td>
-        <td>{{ instance.is_imdsv1 }}</td>
-        <td><button class="enable-imdsv2-button" data-instance-id="{{ instance.id }}">Enable IMDSv2</button></td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
+<div class="container">
+  <h1>List of EC2 Instances</h1>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>State</th>
+      <th>Type</th>
+      <th>Public IP</th>
+      <th>Publicly Exposed</th>
+      <th>Exposed Ports Details</th>
+      <th>Action</th>
+    </tr>
+    {% for instance in instances %}
+    <tr>
+      <td>{{ instance.id }}</td>
+      <td><a href="/instance/{{ instance.id }}">{{ instance.name }}</a></td>
+      <td>{{ instance.state }}</td>
+      <td>{{ instance.type }}</td>
+      <td>{{ instance.public_ip }}</td>
+      <td>{{ instance.has_overly_permissive_sg }}</td>
+      <td>
+        {% for reason in instance.exposed_reasons %}
+        {{ reason }}<br>
+        {% endfor %}
+      </td>
+      <td><button class="enable-imdsv2-button" data-instance-id="{{ instance.id }}">Enable IMDSv2</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
   <script>
     $('.enable-imdsv2-button').click(function () {
