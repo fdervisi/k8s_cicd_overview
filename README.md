@@ -421,7 +421,7 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
    The actions in this workflow will run on the latest version of Ubuntu available on GitHub Actions.
 
    ```yaml
-  runs-on: ubuntu-latest
+   runs-on: ubuntu-latest
    ```
 
    **Workflow Steps**:
