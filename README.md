@@ -4,7 +4,7 @@ In the evolving world of DevOps, the integration of cloud resources with Continu
 
 It's essential to note that while the AWS EC2 Instance Checker serves as a hands-on illustration, the true essence of this guide lies in the broader landscape of integration and deployment mechanisms. We'll traverse the design, architecture, and synergy of cutting-edge DevOps tools, advocating a "Learn by Doing" approach.
 
-So, whether you're an architect aiming to decipher the complex dance of microservice applications, CI/CD, and GitOps, or a hands-on DevOps engineer passionate about constructing resilient pipelines, you're in the right place.
+So, whether you're an architect aiming to understand the intricate interplay of microservice applications, CI/CD, and GitOps, or a hands-on DevOps engineer passionate about constructing resilient pipelines, you're in the right place.
 
 ![CICD Pipeline](img/CICD.png)
 
