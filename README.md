@@ -398,39 +398,145 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
 
    - Go to your **GitHub repository**.
    - Click on the **Actions** tab.
-   - Choose **New Workflow** or define a custom one. Below is a sample `.yml` configuration:
+   - Choose **New Workflow** or define a custom one.
+
+   Below is a breakdown of a sample `.yaml` configuration:
 
    ```yaml
-   name: Build and Push Docker Image
+  name: Build, Push Docker Image, and Code Analysis
 
-   on:
-     push:
-       branches: [ master ]
-       paths:
-       - 'aws-ec2-instance-checker/**'
+    on:
+      push:
+        branches: [ master ]
+        paths:
+        - 'aws-ec2-instance-checker/**'
 
-   jobs:
-     build:
-       runs-on: ubuntu-latest
+    jobs:
+      build:
+        runs-on: ubuntu-latest
 
-       steps:
-       - name: Check Out Code
-         uses: actions/checkout@v2
+        steps:
+        - name: Check Out Code
+          uses: actions/checkout@v2
 
-       - name: DockerHub Login
-         uses: docker/login-action@v1
-         with:
-           username: ${{ secrets.DOCKERHUB_USERNAME }}
-           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        - name: Set up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.10' # adjust this based on your project's Python version
 
-       - name: Build & Push Image
-         uses: docker/build-push-action@v2
-         with:
-           context: aws-ec2-instance-checker
-           push: true
-           tags: |
-             fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
-             fdervisi/aws-ec2-instance-checker:latest
+        - name: Install Dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install bandit
+
+        - name: Run Bandit
+          run: bandit -r aws-ec2-instance-checker
+          continue-on-error: true
+
+        - name: Log in to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build and Push Docker Image
+          uses: docker/build-push-action@v2
+          with:
+            context: aws-ec2-instance-checker
+            push: true
+            tags: |
+              fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
+              fdervisi/aws-ec2-instance-checker:latest
+  ```
+
+   **Trigger Events**:
+
+   The workflow is triggered whenever there's a push to the `master` branch and specifically when changes are made to files within the `aws-ec2-instance-checker` directory.
+
+   ```yaml
+  on:
+    push:
+      branches: [ master ]
+      paths:
+      - 'aws-ec2-instance-checker/**'
+   ```
+
+   **Environment**:
+
+   The actions in this workflow will run on the latest version of Ubuntu available on GitHub Actions.
+
+   ```yaml
+  runs-on: ubuntu-latest
+   ```
+
+   **Workflow Steps**:
+
+   1. **Check Out Code**:
+   
+      This step checks out the repository's code to the runner, making it available for subsequent steps in the workflow.
+
+   ```yaml
+   - name: Check Out Code
+     uses: actions/checkout@v2
+   ```
+
+   2. **Set up Python**:
+   
+      Establishes a Python environment on the runner, specifically using Python version `3.10`. This version can be adjusted based on the project's needs.
+
+   ```yaml
+   - name: Set up Python
+     uses: actions/setup-python@v2
+     with:
+       python-version: '3.10'
+   ```
+
+   3. **Install Dependencies**:
+   
+      Upgrades `pip` to its latest version and then installs the `bandit` tool, a Python security linter.
+
+   ```yaml
+   - name: Install Dependencies
+     run: |
+       python -m pip install --upgrade pip
+       pip install bandit
+   ```
+
+   4. **Run Bandit**:
+   
+      Executes Bandit to scan the code in the `aws-ec2-instance-checker` directory for potential security vulnerabilities. The attribute `continue-on-error: true` ensures that even if Bandit flags issues, the workflow doesn't halt and continues to the next steps.
+
+   ```yaml
+   - name: Run Bandit
+     run: bandit -r aws-ec2-instance-checker
+     continue-on-error: true
+   ```
+
+   5. **Log in to DockerHub**:
+   
+      Uses stored secrets to securely log into DockerHub. This is vital to push the Docker image subsequently.
+
+   ```yaml
+   - name: Log in to DockerHub
+     uses: docker/login-action@v1
+     with:
+       username: ${{ secrets.DOCKERHUB_USERNAME }}
+       password: ${{ secrets.DOCKERHUB_TOKEN }}
+   ```
+
+   6. **Build and Push Docker Image**:
+   
+      Constructs a Docker image from the code within the `aws-ec2-instance-checker` directory and then pushes this image to DockerHub. The image receives two tags: one based on the current GitHub Actions run number and another as the `latest` version.
+
+   ```yaml
+   - name: Build and Push Docker Image
+     uses: docker/build-push-action@v2
+     with:
+       context: aws-ec2-instance-checker
+       push: true
+       tags: |
+         fdervisi/aws-ec2-instance-checker:${{ github.run_number }}.0.0
+         fdervisi/aws-ec2-instance-checker:latest
    ```
 
 3. **Activate Your Workflow**:
