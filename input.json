@@ -1,8 +1,0 @@
-{
-    "Role": {
-        "Policies": [
-            "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-            "... other policies ..."
-        ]
-    }
-}
