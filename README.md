@@ -513,11 +513,6 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
 
    ![Updated Image on Docker Hub](img/docker-hub.png)
 
----
-
-These explanations provide a step-by-step guide on what the user should expect and how to navigate through the CI/CD process using the provided images as visual aids. Let me know if this elaboration meets your expectations or if further modifications are needed!
-
-
 3. **Activate Your Workflow**:
 
    Commit and push your workflow. GitHub Actions will automatically detect the `.yaml` file, initiating the workflow upon any qualifying event (e.g., changes to the `aws-ec2-instance-checker` directory on the master branch).
