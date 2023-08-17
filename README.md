@@ -530,7 +530,7 @@ metadata:
   name: opa-policy
 ```
 
-When developers modify the OPA policy, ArgoCD synchronizes it. However, a challenge arises: the OPA deployment doesn't restart automatically when the content of the config map changes. To address this, I opted for a straightforward yet effective solution: **reloader**!
+When developers modify the OPA policy, ArgoCD synchronizes it. However, a challenge arises: the OPA deployment doesn't restart automatically when the content of the config map changes. To address this, I opted for a straightforward yet effective solution:
 
 [Reloader](https://github.com/stakater/Reloader) is a Kubernetes controller that watches changes in ConfigMap and Secret, then takes the necessary action on pods (like restarting) to make the updated data available. This tool is pivotal in ensuring our deployments are always in sync with our configuration changes.
 
@@ -593,6 +593,10 @@ spec:
           configMap:
             name: opa-policy
 ```
+
+`configmap.reloader.stakater.com/reload: "opa-policy"`
+
+This annotation is specific to **reloader**. It indicates to the `reloader` that it should watch the specified ConfigMap (`opa-policy` in this case). When changes occur in the `opa-policy` ConfigMap, `reloader` will automatically trigger a rolling restart of the pods that are using this ConfigMap. This ensures that the latest configuration changes are picked up by the associated pods without manual intervention, facilitating seamless and dynamic updates in a Kubernetes environment.
 
 ---
 
