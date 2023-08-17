@@ -45,10 +45,11 @@ Exploring these alternatives empowers teams to make decisions rooted in project 
 
 Constructed using Python and Flask, the AWS EC2 Instance Checker is a 2-tier web application that leverages an OPA server to validate against AWS resources. For scalability, the frontend has 3 deployments and is publicly accessible. For security purposes, the OPA server communicates internally within the cluster. It offers the following features:
 
-- **View EC2 Instances**: Easily fetch and display all your AWS EC2 instances.
-- **Inspect Instance Details**: Get in-depth information about any selected instance.
-- **Upgrade Metadata Service**: With a simple click, transition your instances to IMDSv2.
-- **Check Metadata Service Version**: Monitor the metadata service version of your instances effortlessly.
+
+- **Listing EC2 Instances**: Seamlessly view and list all your AWS EC2 instances in one place.
+- **Detailed Instance Insights**: Dive deep into the specifics of any chosen instance, accessing comprehensive data at a glance.
+- **Public Exposure Check**: Determine whether a particular EC2 instance is publicly accessible or securely restricted.
+
 
 ![App Architecture](img/CTO-APP.png)
 
