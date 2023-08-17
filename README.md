@@ -501,6 +501,11 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
          fdervisi/aws-ec2-instance-checker:latest
    ```
 
+![GitHub Action](img/github-action.png)
+
+![Docker Hub](img/docker-hub.png)
+
+
 3. **Activate Your Workflow**:
 
    Commit and push your workflow. GitHub Actions will automatically detect the `.yaml` file, initiating the workflow upon any qualifying event (e.g., changes to the `aws-ec2-instance-checker` directory on the master branch).
