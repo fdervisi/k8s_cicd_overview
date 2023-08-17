@@ -88,8 +88,8 @@
         <th>State</th>
         <th>Type</th>
         <th>Public IP</th>
-        <th>IMDSv1 Status</th>
-        <th>Action</th>
+        <th>Public Exposure Status</th>
+        
       </tr>
       {% for instance in instances %}
       <tr>
@@ -98,14 +98,13 @@
         <td>{{ instance.state }}</td>
         <td>{{ instance.type }}</td>
         <td>{{ instance.public_ip }}</td>
-        <td>{{ instance.is_imdsv1 }}</td>
-        <td><button class="enable-imdsv2-button" data-instance-id="{{ instance.id }}">Enable IMDSv2</button></td>
+        <td>{{ instance.is_public_exposed }}</td>
       </tr>
       {% endfor %}
     </table>
   </div>
 
-  <script>
+  <!-- <script>
     $('.enable-imdsv2-button').click(function () {
       var instanceId = $(this).data('instance-id');
       $.post('/enable_imdsv2/' + instanceId, function (data) {
@@ -116,7 +115,7 @@
         }
       });
     });
-  </script>
+  </script> -->
 
 </body>
 
