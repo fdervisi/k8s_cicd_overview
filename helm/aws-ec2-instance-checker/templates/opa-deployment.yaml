@@ -33,8 +33,8 @@ spec:
           volumeMounts:
             - readOnly: true
               mountPath: /policies
-              name: check-imdsv1-policy
+              name: check-aws-ec2-instance-checkerv1-policy
       volumes:
-        - name: check-imdsv1-policy
+        - name: check-aws-ec2-instance-checkerv1-policy
           configMap:
             name: opa-policy

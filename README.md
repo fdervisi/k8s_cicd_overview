@@ -41,15 +41,19 @@ Exploring these alternatives empowers teams to make decisions rooted in project 
 
 ---
 
+Certainly, here's the modified section:
+
+---
+
 ## Exploring the AWS EC2 Instance Checker
 
-Constructed using Python and Flask, the AWS EC2 Instance Checker is a 2-tier web application that leverages an OPA server to validate against AWS resources. For scalability, the frontend has 3 deployments and is publicly accessible. For security purposes, the OPA server communicates internally within the cluster. It offers the following features:
+Developed with Python and Flask, the AWS EC2 Instance Checker stands as a 2-tier web application, utilizing an OPA server for validations against AWS resources. Designed with scalability in mind, its frontend is structured across three deployments, ensuring public accessibility. To bolster security, communication with the OPA server is confined internally within the cluster. Here's a snapshot of its key features:
 
+- **Listing EC2 Instances**: Easily navigate and enumerate all your AWS EC2 instances in a consolidated view.
+- **Detailed Instance Insights**: Delve into the specifics of any selected instance, capturing a holistic view of its details.
+- **Public Exposure Check**: Ascertain if an EC2 instance is publicly accessible or if it remains securely confined.
 
-- **Listing EC2 Instances**: Seamlessly view and list all your AWS EC2 instances in one place.
-- **Detailed Instance Insights**: Dive deep into the specifics of any chosen instance, accessing comprehensive data at a glance.
-- **Public Exposure Check**: Determine whether a particular EC2 instance is publicly accessible or securely restricted.
-
+It's important to highlight that this serves as a basic example. There's potential to further refine the policy to evaluate aspects like open SecurityGroups, IMDS versions, and IAM Instance Roles with extensive permissions. However, such enhancements fall outside the scope of this guide.
 
 ![App Architecture](img/CTO-APP.png)
 
@@ -61,7 +65,7 @@ Any microservice-based application shines brightest when integrated with leading
 
 ### 1. GitHub Actions: Automating Workflows with Precision
 
-GitHub Actions streamlines software workflows right within GitHub. For our AWS EC2 Instance Checker, any modifications to the `main` branch activate GitHub Actions. It then assembles a Docker image and dispatches it to DockerHub.
+GitHub Actions streamlines software workflows right within GitHub. For our AWS EC2 Instance Checker, any modifications to the `master` branch activate GitHub Actions. It then assembles a Docker image and dispatches it to DockerHub.
 
 ### 2. Argo CD & Argo CD Image Updater: Orchestrating Kubernetes Deployments
 
@@ -529,13 +533,14 @@ The OPA policy is encapsulated within a config map:
 ```yaml
 apiVersion: v1
 data:
-  check_imdsv1.rego: |
+  check_aws-ec2-instance-checkerv1.rego: |
     package ec2
 
-    default match = false
+    default result = false
 
-    match {
-        input.MetadataOptions.HttpTokens == "optional"
+    # Rule to check if the instance has a public IP address
+    result {
+        input.public_ip != "None"
     }
 kind: ConfigMap
 metadata:
@@ -600,9 +605,9 @@ spec:
           volumeMounts:
             - readOnly: true
               mountPath: /policies
-              name: check-imdsv1-policy
+              name: check-aws-ec2-instance-checkerv1-policy
       volumes:
-        - name: check-imdsv1-policy
+        - name: check-aws-ec2-instance-checkerv1-policy
           configMap:
             name: opa-policy
 ```

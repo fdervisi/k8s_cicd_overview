@@ -60,7 +60,7 @@
     }
 
     /* New style for the button */
-    .enable-imdsv2-button {
+    .enable-aws-ec2-instance-checkerv2-button {
       display: inline-block;
       margin-left: 10px;
       padding: 3px 8px;
@@ -103,19 +103,6 @@
       {% endfor %}
     </table>
   </div>
-
-  <!-- <script>
-    $('.enable-imdsv2-button').click(function () {
-      var instanceId = $(this).data('instance-id');
-      $.post('/enable_imdsv2/' + instanceId, function (data) {
-        if (data.success) {
-          alert('IMDSv2 enabled successfully for instance ' + instanceId);
-        } else {
-          alert('Failed to enable IMDSv2 for instance ' + instanceId);
-        }
-      });
-    });
-  </script> -->
 
 </body>
 
