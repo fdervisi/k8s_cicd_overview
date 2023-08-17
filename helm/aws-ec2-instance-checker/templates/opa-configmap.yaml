@@ -3,10 +3,11 @@ data:
   check_imdsv1.rego: |
     package ec2
 
-    default match = false
+    default public_exposed = false
 
-    match {
-        input.MetadataOptions.HttpTokens == "optional"
+    # Rule to check if the instance has a public IP address
+    public_exposed {
+        input.public_ip != "None"
     }
 kind: ConfigMap
 metadata:
