@@ -1,10 +1,13 @@
 # GitOps in Action: Mastering CI/CD with Microservice-Based Applications
 
-In the evolving world of DevOps, the integration of cloud resources with Continuous Integration and Continuous Deployment (CI/CD) has transitioned from being a mere trend to an essential paradigm shift. This guide delves into this transformation, using the AWS EC2 Instance Checker as a representative example. Developed with the Flask web framework, this microservice-based application connects users to AWS EC2 instances, showcasing the elegance of automated CI/CD deployments in Kubernetes.
+In the dynamic world of DevOps, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is more than just a trend—it's a significant shift. I've designed this guide to dive deep into this transformation, highlighting the Flask-powered AWS EC2 Instance Checker as our model microservice application. This tool operates as a two-tier web application, utilizing an OPA server for various validations against AWS resources.
 
-It's essential to note that while the AWS EC2 Instance Checker serves as a hands-on illustration, the true essence of this guide lies in the broader landscape of integration and deployment mechanisms. We'll traverse the design, architecture, and synergy of cutting-edge DevOps tools, advocating a "Learn by Doing" approach.
+Central to this journey is a straightforward end-to-end pipeline I've designed. For the CI phase, it actively scans the code for vulnerabilities, build a Docker image, and then uploads it to the repository. Following this, the CD phase takes over: ArgoCD monitors the Kubernetes deployment, and if any configuration or image changes are detected, it seamlessly deploys the updates to the cluster.
 
-So, whether you're an architect aiming to understand the intricate interplay of microservice applications, CI/CD, and GitOps, or a hands-on DevOps engineer passionate about constructing resilient pipelines, you're in the right place.
+While the AWS EC2 Instance Checker application offers hands-on insights, my primary goal is to shine a light on modern DevOps tools and practices. Adopting a "Learn by Doing" approach, I delve into microservice architectures, CI/CD mechanics, GitOps, and the art of effective pipeline construction.
+
+If you're an architect keen on understanding the nuances of the current DevOps landscape, or an engineer eager to develop robust pipelines, this guide is tailored just for you.
+
 
 ![CICD Pipeline](img/CICD.png)
 
@@ -12,7 +15,7 @@ So, whether you're an architect aiming to understand the intricate interplay of 
 
 ## Tool Alternatives
 
-In the vast DevOps landscape, a myriad of tools have made their mark. While some are frontrunners, others shine with unique features catering to specific needs. Here's a roundup of alternatives to the primary tools highlighted in this guide:
+In the expansive DevOps landscape, numerous tools have emerged over time. While some lead the pack, others stand out with specialized features tailored to particular requirements. Below is a list of alternatives to the main tools emphasized in this guide:
 
 1. **Alternatives to GitHub Actions**:
    - **Jenkins**: An open-source automation powerhouse for building, deploying, and automating projects.
@@ -41,7 +44,7 @@ Exploring these alternatives empowers teams to make decisions rooted in project 
 
 ## Exploring the AWS EC2 Instance Checker
 
-Built with Python and Flask, the AWS EC2 Instance Checker acts as your bridge to AWS EC2 instances, offering the following features:
+Constructed using Python and Flask, the AWS EC2 Instance Checker is a 2-tier web application that leverages an OPA server to validate against AWS resources. For scalability, the frontend has 3 deployments and is publicly accessible. For security purposes, the OPA server communicates internally within the cluster. It offers the following features:
 
 - **View EC2 Instances**: Easily fetch and display all your AWS EC2 instances.
 - **Inspect Instance Details**: Get in-depth information about any selected instance.
@@ -327,6 +330,11 @@ For an in-depth guide, you can turn to ArgoCD's Image Updater official documenta
             selfHeal: true
             allowEmpty: true
    ```
+   - `argocd-image-updater.argoproj.io/image-list`: This annotation specifies the Docker images that the ArgoCD Image Updater should monitor. In this case, it's set to watch for any new versions of the `fdervisi/aws-ec2-instance-checker` image.
+   
+   - `argocd-image-updater.argoproj.io/write-back-method`: This determines how the Image Updater writes back the updated image version. Here, it's configured to use the stored secret `argocd/git-creds` to directly update the image version in the Git repository.
+   
+   - `argocd-image-updater.argoproj.io/git-branch`: This directs the Image Updater to target the `master` branch when pushing updates to the Git repository.
 
    After saving the manifest, apply it to Kubernetes:
 
