@@ -4,5 +4,5 @@ helm:
     value: fdervisi/aws-ec2-instance-checker
     forcestring: true
   - name: image.tag
-    value: 18.0.0
+    value: 19.0.0
     forcestring: true
