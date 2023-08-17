@@ -1,6 +1,6 @@
 # GitOps in Action: Mastering CI/CD with Microservice-Based Applications
 
-In the dynamic world of DevOps, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is more than just a trend—it's a significant shift. With this guide, I aim to provide a deep dive into this evolution, spotlighting the Flask-powered AWS EC2 Instance Checker as our illustrative microservice application. This tool is structured as a two-tier web application. Crucially, it employs an OPA (Open Policy Agent) server, a general-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack. With the OPA server, the application can conduct a range of validations against AWS resources, ensuring that operations align with predefined policies and best practices.
+In the dynamic world of DevOps, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is more than just a trend—it's a significant shift. With this guide, I aim to provide a deep dive into this evolution, spotlighting the Flask-powered AWS EC2 Instance Checker as our illustrative microservice application. This tool is structured as a two-tier web application. Crucially, it employs an [OPA](https://www.openpolicyagent.org/docs/latest/) (Open Policy Agent) server, a general-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack. With the OPA server, the application can conduct a range of validations against AWS resources, ensuring that operations align with predefined policies and best practices.
 
 Central to this journey is a straightforward end-to-end pipeline I've designed. For the Continuous Integration (CI) phase, it actively scans the code for vulnerabilities, build a Docker image, and then uploads it to the repository. Following this, the Continuous Deployment (CD) phase takes over: ArgoCD monitors the Kubernetes deployment, and if any configuration or image changes are detected, it seamlessly deploys the updates to the cluster.
 
@@ -8,8 +8,7 @@ While the AWS EC2 Instance Checker application offers hands-on insights, my prim
 
 If you're an architect keen on understanding the nuances of the current DevOps landscape, or an engineer eager to develop robust pipelines, this guide is tailored just for you.
 
-
-![CICD Pipeline](img/CICD.png)
+[CICD Pipeline](img/CICD.png)
 
 ---
 
