@@ -73,9 +73,9 @@ def ec2_instances():
     'type': instance.instance_type,
     'public_ip': instance.public_ip_address
 })
-            opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/match', json={"input": instance_data})
-            is_public_exposed = opa_response.json()['result']
-    
+            opa_response = requests.post(f'{OPA_URL}/v1/data/ec2/result', json={"input": instance_data})
+            is_public_exposed = opa_response.json().get('result', False)
+
             instances_list.append({
                 'id': instance.id,
                 'name': name,
@@ -85,6 +85,9 @@ def ec2_instances():
                 'is_public_exposed': is_public_exposed
             })
         
+        print("instance_data", instance_data)
+        print("opa_response", opa_response.json())
+
         return render_template('instances.html', instances=instances_list)
     
     return render_template('index.html')
