@@ -505,6 +505,94 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
 
    Commit and push your workflow. GitHub Actions will automatically detect the `.yaml` file, initiating the workflow upon any qualifying event (e.g., changes to the `aws-ec2-instance-checker` directory on the master branch).
 
+---
+
+### Automating the Full CI/CD Pipeline
+
+As we journey through the intricacies of CI/CD automation, it's vital to address a specific detail that demands attention to ensure a fully automated pipeline. It underscores the principle that adaptations are often required based on the unique demands of your project.
+
+The OPA policy is encapsulated within a config map:
+
+```yaml
+apiVersion: v1
+data:
+  check_imdsv1.rego: |
+    package ec2
+
+    default match = false
+
+    match {
+        input.MetadataOptions.HttpTokens == "optional"
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: opa-policy
+```
+
+When developers modify the OPA policy, ArgoCD synchronizes it. However, a challenge arises: the OPA deployment doesn't restart automatically when the content of the config map changes. To address this, I opted for a straightforward yet effective solution: **reloader**!
+
+[Reloader](https://github.com/stakater/Reloader) is a Kubernetes controller that watches changes in ConfigMap and Secret, then takes the necessary action on pods (like restarting) to make the updated data available. This tool is pivotal in ensuring our deployments are always in sync with our configuration changes.
+
+**Installing Reloader using Vanilla Manifests**:
+
+Instead of using Helm, you can also deploy Reloader using vanilla manifests. Here's how:
+
+1. Replace the `RELEASE-NAME` placeholder provided in the manifest with a proper value.
+2. Deploy Reloader by running the following command:
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/stakater/Reloader/master/deployments/kubernetes/reloader.yaml
+```
+
+By default, Reloader is deployed in the default namespace and watches changes in secrets and configmaps across all namespaces.
+
+If needed, Reloader's behavior can be fine-tuned. For instance, it can be configured to ignore certain resources like secrets and configmaps. This is achieved by passing specific arguments (`spec.template.spec.containers.args`) to its container.
+
+Below is the deployment configuration leveraging `reloader`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  labels:
+    app: opa
+  annotations:
+    configmap.reloader.stakater.com/reload: "opa-policy"
+spec:
+spec:
+  replicas: {{ .Values.opa.replicaCount }}
+  selector:
+    matchLabels:
+      app: opa
+  template:
+    metadata:
+      labels:
+        app: opa
+      name: opa
+    spec:
+      containers:
+        - name: opa
+          image: "{{ .Values.opa.image.repository }}:{{ .Values.opa.image.tag }}"
+          imagePullPolicy: {{ .Values.opa.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.opa.containerPort }}
+          args:
+            - "run"
+            - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
+            - "--server"
+            - "/policies"
+          volumeMounts:
+            - readOnly: true
+              mountPath: /policies
+              name: check-imdsv1-policy
+      volumes:
+        - name: check-imdsv1-policy
+          configMap:
+            name: opa-policy
+```
 
 ---
 
