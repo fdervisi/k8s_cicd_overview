@@ -8,7 +8,7 @@ While the AWS EC2 Instance Checker application offers hands-on insights, my prim
 
 If you're an architect keen on understanding the nuances of the current DevOps landscape, or an engineer eager to develop robust pipelines, this guide is tailored just for you.
 
-[CICD Pipeline](img/CICD.png)
+![CICD Pipeline](img/CICD.png)
 
 ---
 
