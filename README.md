@@ -501,9 +501,21 @@ GitHub Actions offers a flexible platform for automating software workflows. Her
          fdervisi/aws-ec2-instance-checker:latest
    ```
 
-![GitHub Action](img/github-action.png)
+   7. **Monitoring the CI Process via GitHub Actions**
 
-![Docker Hub](img/docker-hub.png)
+   Once you've initiated the CI/CD process, you can actively monitor its progress. Begin by logging into your GitHub account. Navigate to the repository in question and click on the "Actions" tab. This section provides a visual representation of the CI process, detailing each step and its status.
+
+   ![GitHub Action Workflow](img/github-action.png)
+
+   8. **Verifying the Docker Image Update**
+
+   After the CI process completes, the pipeline proceeds to build and update the Docker image based on the changes made. This update can be verified by visiting Docker Hub. There, you'll observe that the recent build has been pushed, reflecting the modifications made in the CI process. 
+
+   ![Updated Image on Docker Hub](img/docker-hub.png)
+
+---
+
+These explanations provide a step-by-step guide on what the user should expect and how to navigate through the CI/CD process using the provided images as visual aids. Let me know if this elaboration meets your expectations or if further modifications are needed!
 
 
 3. **Activate Your Workflow**:
