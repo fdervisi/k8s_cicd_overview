@@ -2,7 +2,7 @@
 
 In the dynamic world of DevOps, integrating cloud resources with Continuous Integration and Continuous Deployment (CI/CD) is more than just a trend—it's a significant shift. I've designed this guide to dive deep into this transformation, highlighting the Flask-powered AWS EC2 Instance Checker as our model microservice application. This tool operates as a two-tier web application, utilizing an OPA server for various validations against AWS resources.
 
-Central to this journey is a straightforward end-to-end pipeline I've designed. For the CI phase, it actively scans the code for vulnerabilities, build a Docker image, and then uploads it to the repository. Following this, the CD phase takes over: ArgoCD monitors the Kubernetes deployment, and if any configuration or image changes are detected, it seamlessly deploys the updates to the cluster.
+Central to this journey is a straightforward end-to-end pipeline I've designed. For the Continuous Integration (CI) phase, it actively scans the code for vulnerabilities, build a Docker image, and then uploads it to the repository. Following this, the Continuous Deployment (CD) phase takes over: ArgoCD monitors the Kubernetes deployment, and if any configuration or image changes are detected, it seamlessly deploys the updates to the cluster.
 
 While the AWS EC2 Instance Checker application offers hands-on insights, my primary goal is to shine a light on modern DevOps tools and practices. Adopting a "Learn by Doing" approach, I delve into microservice architectures, CI/CD mechanics, GitOps, and the art of effective pipeline construction.
 
