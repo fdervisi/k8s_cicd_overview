@@ -41,10 +41,6 @@ Exploring these alternatives empowers teams to make decisions rooted in project 
 
 ---
 
-Certainly, here's the modified section:
-
----
-
 ## Exploring the AWS EC2 Instance Checker
 
 Developed with Python and Flask, the AWS EC2 Instance Checker stands as a 2-tier web application, utilizing an OPA server for validations against AWS resources. Designed with scalability in mind, its frontend is structured across three deployments, ensuring public accessibility. To bolster security, communication with the OPA server is confined internally within the cluster. Here's a snapshot of its key features:
