@@ -85,7 +85,7 @@ def instance(id):
     Returns the details of an EC2 instance with the given ID.
 
     Args:
-        id (str): The ID of the EC2 instance.
+        id (str): The ID of the EC2 instance..
 
     Returns:
         dict: The details of the EC2 instance in JSON format.
